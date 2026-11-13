@@ -60,7 +60,8 @@ else
     echo "ERROR: the Unreleased section of CHANGELOG.md is empty; nothing to release" >&2
     exit 1
   fi
-  sed -i.bak -E "s/^## \[Unreleased\].*/## [Unreleased]\n\n## [$new] - $today/" CHANGELOG.md
+  awk -v hdr="## [$new] - $today" '/^## \[Unreleased\]/{print; print ""; print hdr; next} {print}' CHANGELOG.md > CHANGELOG.md.new
+  mv CHANGELOG.md.new CHANGELOG.md
 fi
 # link references at the bottom
 if grep -qE '^\[Unreleased\]:' CHANGELOG.md; then
