@@ -550,7 +550,7 @@ func (a *App) watchlistCmd() *cobra.Command {
 		}}
 	gex.register(c)
 
-	var cname, cids string
+	var cids string
 	var cex extra
 	create := &cobra.Command{Use: "create <name>", Short: "Create a watchlist (--contracts id,id,...)", Args: exactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -561,7 +561,6 @@ func (a *App) watchlistCmd() *cobra.Command {
 					return kv
 				})
 		}}
-	_ = cname
 	create.Flags().StringVar(&cids, "contracts", "", "contract ids, comma-separated")
 	cex.register(create)
 
