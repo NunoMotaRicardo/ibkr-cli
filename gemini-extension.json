@@ -1,0 +1,5 @@
+{
+  "name": "ibkr-cli",
+  "version": "0.1.0",
+  "description": "Interactive Brokers for AI agents: a token-lean Go CLI (ibkr) over IBKR's MCP connector plus an Agent Skill for account, positions, quotes, options, alerts, watchlists and guarded orders."
+}
