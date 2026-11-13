@@ -1,0 +1,17 @@
+- [Home](Home.md)
+- [Requirements](product/requirements.md)
+- [Code overview](architecture/code/overview.md)
+- ADRs
+  - [0001 Go CLI](architecture/adr/0001-go-cli.md)
+  - [0002 MCP client](architecture/adr/0002-hand-rolled-mcp-client.md)
+  - [0003 Command surface](architecture/adr/0003-hybrid-command-surface.md)
+  - [0004 OAuth](architecture/adr/0004-oauth-mcp-authorization.md)
+  - [0005 Scopes](architecture/adr/0005-scopes-and-autonomous-trading.md)
+  - [0006 Safety](architecture/adr/0006-safety-classification.md)
+  - [0007 Secrets](architecture/adr/0007-secrets-storage.md)
+  - [0008 Staying current](architecture/adr/0008-staying-current.md)
+  - [0009 Versioning](architecture/adr/0009-versioning-and-releases.md)
+- Plans
+  - [Provider sync](plans/provider-sync.md)
+  - [Release process](plans/release-process.md)
+- [Sources](sources/README.md)

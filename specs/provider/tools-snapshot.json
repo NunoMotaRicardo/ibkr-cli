@@ -1,0 +1,412 @@
+{
+  "note": "Seed snapshot created 2026-11-12 from the connector's tool list (IBKR connector 1.2.1). Only 10 read-only tools carry input-schema signatures; the rest are names only (the diff skips schema comparison for them). Regenerate with `ibkr tools --snapshot specs/provider/tools-snapshot.json` after `ibkr connect` and review the git diff. Live-order tools (submit_order, modify_order, preview_order, get_order_rules, cancel) appear only with the mcp.orders.submit scope and the AUTONOMOUS flow, so they are not in this list.",
+  "server": "https://api.ibkr.com/v1/api/mcp-public",
+  "generated_at": "2026-11-12T00:00:00Z",
+  "tool_count": 49,
+  "tools": [
+    {
+      "name": "create_alert"
+    },
+    {
+      "name": "create_order_instruction"
+    },
+    {
+      "name": "create_saved_screener"
+    },
+    {
+      "name": "create_watchlist"
+    },
+    {
+      "name": "delete_alert"
+    },
+    {
+      "name": "delete_order_instruction"
+    },
+    {
+      "name": "delete_saved_screener"
+    },
+    {
+      "name": "delete_watchlist"
+    },
+    {
+      "name": "edit_watchlist"
+    },
+    {
+      "name": "get_account_balances",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_account_orders",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "show_completed": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_account_positions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_account_summary",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_account_trades",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "enum": [
+              "TODAY",
+              "DAYS_7",
+              "DAYS_30",
+              "DAYS_60",
+              "DAYS_90",
+              "MONTH_TO_DATE",
+              "YEAR_TO_DATE",
+              "LAST_QUARTER",
+              "TWO_QUARTERS_AGO",
+              "THREE_QUARTERS_AGO",
+              "FOUR_QUARTERS_AGO"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_alert"
+    },
+    {
+      "name": "get_alerts"
+    },
+    {
+      "name": "get_combo_identifier"
+    },
+    {
+      "name": "get_company_connections"
+    },
+    {
+      "name": "get_company_themes"
+    },
+    {
+      "name": "get_earnings_insight"
+    },
+    {
+      "name": "get_flow_type"
+    },
+    {
+      "name": "get_option_data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expiration_id": {
+            "type": "string"
+          },
+          "max_strike": {
+            "type": "number"
+          },
+          "min_strike": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "expiration_id"
+        ]
+      }
+    },
+    {
+      "name": "get_option_parameters",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "option_exchange": {
+            "type": "string"
+          },
+          "option_sec_type": {
+            "type": "string",
+            "enum": [
+              "OPT",
+              "FOP"
+            ]
+          },
+          "underlying_contract_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "underlying_contract_id"
+        ]
+      }
+    },
+    {
+      "name": "get_order_instructions"
+    },
+    {
+      "name": "get_pa_allocation"
+    },
+    {
+      "name": "get_pa_performance_all_periods"
+    },
+    {
+      "name": "get_price_history",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_id": {
+            "type": "integer"
+          },
+          "exchange": {
+            "type": "string"
+          },
+          "include_corporate_actions": {
+            "type": "boolean"
+          },
+          "outside_rth": {
+            "type": "boolean"
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "ONE_DAY",
+              "TWO_DAYS",
+              "THREE_DAYS",
+              "ONE_WEEK",
+              "TWO_WEEKS",
+              "ONE_MONTH",
+              "THREE_MONTHS",
+              "SIX_MONTHS",
+              "ONE_YEAR",
+              "TWO_YEARS",
+              "FIVE_YEARS"
+            ]
+          },
+          "security_type": {
+            "type": "string",
+            "enum": [
+              "STK",
+              "OPT",
+              "FUT",
+              "FOP",
+              "CASH",
+              "WAR",
+              "BOND",
+              "CFD",
+              "FUND",
+              "IND",
+              "CRYPTO",
+              "CMDTY",
+              "IOPT"
+            ]
+          },
+          "step": {
+            "type": "string",
+            "enum": [
+              "THIRTY_SECS",
+              "ONE_MIN",
+              "TWO_MINS",
+              "FIVE_MINS",
+              "TEN_MINS",
+              "FIFTEEN_MINS",
+              "THIRTY_MINS",
+              "ONE_HOUR",
+              "TWO_HOURS",
+              "FOUR_HOURS",
+              "ONE_DAY",
+              "ONE_WEEK",
+              "ONE_MONTH"
+            ]
+          },
+          "step_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contract_id",
+          "security_type",
+          "step",
+          "outside_rth"
+        ]
+      }
+    },
+    {
+      "name": "get_price_snapshot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_id": {
+            "type": "integer"
+          },
+          "exchange": {
+            "type": "string"
+          },
+          "market_data_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "bid_ask",
+                "last",
+                "change",
+                "prior_close",
+                "plprice",
+                "dividend_yield",
+                "volume",
+                "option_volume",
+                "option_open_interest",
+                "future_open_interest",
+                "option_midpoint_iv",
+                "option_greeks",
+                "underlying_today_option_volume",
+                "underlying_avg_option_volume",
+                "misc_statistics",
+                "avg_90d_usd_volume",
+                "implied_volatility_percentile",
+                "implied_vol_underlying",
+                "implied_vol",
+                "historical_vol",
+                "year_to_date_change",
+                "bond_yield",
+                "cumulative_perf_1d",
+                "cumulative_perf_1w",
+                "cumulative_perf_1m",
+                "cumulative_perf_ytd",
+                "cumulative_perf_1y",
+                "cumulative_perf_3y",
+                "cumulative_perf_5y",
+                "total_net_assets",
+                "top_status",
+                "open",
+                "low",
+                "high",
+                "perpetual_futures_funding_rate"
+              ]
+            }
+          }
+        },
+        "required": [
+          "contract_id"
+        ]
+      }
+    },
+    {
+      "name": "get_saved_screener"
+    },
+    {
+      "name": "get_screener_asset_classes"
+    },
+    {
+      "name": "get_screener_capabilities"
+    },
+    {
+      "name": "get_screener_industries"
+    },
+    {
+      "name": "get_screener_templates"
+    },
+    {
+      "name": "get_screener_themes"
+    },
+    {
+      "name": "get_theme_details"
+    },
+    {
+      "name": "get_watchlist"
+    },
+    {
+      "name": "get_watchlists"
+    },
+    {
+      "name": "list_saved_screeners"
+    },
+    {
+      "name": "preview_screener"
+    },
+    {
+      "name": "provide_customer_feedback"
+    },
+    {
+      "name": "run_saved_screener"
+    },
+    {
+      "name": "search_contracts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "ar",
+              "cs_CZ",
+              "de_DE",
+              "en_US",
+              "es_ES",
+              "et_EE",
+              "fr",
+              "he",
+              "hu_HU",
+              "it_IT",
+              "ja_JP",
+              "ko_KR",
+              "lt_LT",
+              "nl_NL",
+              "pl_PL",
+              "pt_BR",
+              "pt_PT",
+              "ru_RU",
+              "sl_SL",
+              "tr_TR",
+              "zh_CN",
+              "zh_TW"
+            ]
+          },
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_earnings_insights"
+    },
+    {
+      "name": "search_futures"
+    },
+    {
+      "name": "search_investment_topics"
+    },
+    {
+      "name": "set_alert_status"
+    },
+    {
+      "name": "update_alert"
+    },
+    {
+      "name": "update_saved_screener"
+    },
+    {
+      "name": "whats_new"
+    }
+  ]
+}

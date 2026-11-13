@@ -1,0 +1,9 @@
+/dist/
+/ibkr
+/ibkr.exe
+.worktrees/
+*.test
+coverage.out
+# never commit credentials
+credentials.json
+.env
