@@ -1,0 +1,46 @@
+version: 2
+project_name: ibkr-cli
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: ibkr
+    main: ./cmd/ibkr
+    binary: ibkr
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w
+      - -X github.com/NunoMotaRicardo/ibkr-cli/internal/version.Version={{.Version}}
+      - -X github.com/NunoMotaRicardo/ibkr-cli/internal/version.Commit={{.ShortCommit}}
+      - -X github.com/NunoMotaRicardo/ibkr-cli/internal/version.Date={{.Date}}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: "ibkr-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - skills/**/*
+
+checksum:
+  name_template: checksums.txt
+
+# Release notes come from the CHANGELOG section for the tag (see release.yml).
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: NunoMotaRicardo
+    name: ibkr-cli
