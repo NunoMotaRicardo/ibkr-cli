@@ -22,7 +22,8 @@ func (k Kind) String() string {
 	}
 }
 
-var readPrefixes = []string{"get_", "search_", "list_", "preview_", "whats_new", "describe"}
+// run_saved_screener only executes a stored query and returns results, so it is read.
+var readPrefixes = []string{"get_", "search_", "list_", "preview_", "whats_new", "describe", "run_saved_screener"}
 
 var orderVerbs = []string{"submit", "modify", "cancel", "place", "replace", "amend"}
 

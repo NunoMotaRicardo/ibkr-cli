@@ -46,7 +46,7 @@ func (a *App) connectCmd() *cobra.Command {
 	c.Flags().BoolVar(&f.allowOrders, "allow-orders", false, "also request mcp.orders.submit (autonomous live orders)")
 	c.Flags().BoolVar(&f.noBrowser, "no-browser", false, "do not open a browser; print the URL")
 	c.Flags().BoolVar(&f.manual, "manual", false, "headless mode: print the URL, then paste the redirected URL")
-	c.Flags().BoolVar(&f.status, "status", false, "same as `ibkr status`")
+	c.Flags().BoolVar(&f.status, "status", false, "same as ibkr status")
 	c.Flags().DurationVar(&f.wait, "wait", 5*time.Minute, "how long to wait for the browser login")
 	c.Flags().IntVar(&f.port, "port", 0, "fixed loopback port for the redirect (default: random)")
 	return c

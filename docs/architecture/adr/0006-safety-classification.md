@@ -12,5 +12,5 @@ Classify every tool: order-looking names first (`submit_*order*`, `modify_*order
 
 ## Consequences
 
-- Unknown future tools default to write: safe, at the cost of needing `--yes` for harmless new tools until the provider annotates them (known case: `run_saved_screener`).
+- Unknown future tools default to write: safe, at the cost of needing `--yes` for harmless new tools until the provider annotates them (`run_saved_screener` is listed explicitly as read, since it only returns results).
 - The agent skill requires the user's explicit yes before the agent adds `--yes`; one yes covers one execution.

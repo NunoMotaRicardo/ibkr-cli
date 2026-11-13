@@ -29,6 +29,7 @@ func TestClassify(t *testing.T) {
 		{Tool{Name: "create_alert"}, KindWrite},
 		{Tool{Name: "delete_watchlist"}, KindWrite},
 		{Tool{Name: "provide_customer_feedback"}, KindWrite},
+		{Tool{Name: "run_saved_screener"}, KindRead},
 		{Tool{Name: "create_order_instruction"}, KindWrite},
 		{Tool{Name: "delete_order_instruction"}, KindWrite},
 		{Tool{Name: "submit_order"}, KindOrder},

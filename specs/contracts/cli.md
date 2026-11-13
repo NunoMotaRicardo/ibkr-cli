@@ -104,9 +104,9 @@ If the tool does not exist (no `mcp.orders.submit` scope, or not AUTONOMOUS flow
 
 1. Name looks like a live-order mutation (`submit_*order*`, `modify_*order*`, `cancel*`, `place_*order*`, `replace_*`, `amend_*`; anything containing `instruction` is excluded) -> **order**, regardless of annotations.
 2. MCP annotations when present: `destructiveHint: true` -> write; `readOnlyHint: true` -> read; `readOnlyHint: false` -> write.
-3. Otherwise by name: prefixes `get_`, `search_`, `list_`, `preview_`, `whats_new`, `describe` -> read; everything else -> write (`provide_customer_feedback`, `create_*`, `update_*`, `delete_*`, `set_*`, `edit_*`, `run_saved_screener`, ...).
+3. Otherwise by name: prefixes `get_`, `search_`, `list_`, `preview_`, `whats_new`, `describe`, and the name `run_saved_screener` -> read; everything else -> write (`provide_customer_feedback`, `create_*`, `update_*`, `delete_*`, `set_*`, `edit_*`, ...).
 
-Note: `run_saved_screener` does not start with a read prefix, so it is classified write unless the provider marks it `readOnlyHint: true`. The curated `screener run` command therefore needs `--yes` until the provider annotates it.
+Note: `run_saved_screener` is listed explicitly as read: it only executes a stored query and returns results.
 
 ## Safety rules
 
