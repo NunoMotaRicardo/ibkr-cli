@@ -7,6 +7,8 @@ CLI change (flag or exit-code) bumps the minor version and is called out here.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-21
+
 ### Fixed
 - `version` now reports the real version, and `version --check` works, for binaries installed with `go install ...@latest`: the version, commit and date fall back to the build info embedded by the Go toolchain when the release ldflags are absent. Previously such installs reported `dev`.
 
@@ -28,6 +30,7 @@ CLI change (flag or exit-code) bumps the minor version and is called out here.
 - `ibkr tools --diff` / `--snapshot` against `specs/provider/tools-snapshot.json`; `ibkr version --check`.
 - Agent Skill `skills/ibkr` and plugin manifests for Claude Code, Cursor, Gemini CLI and Codex-compatible tools.
 
-[Unreleased]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/NunoMotaRicardo/ibkr-cli/releases/tag/v0.1.0
