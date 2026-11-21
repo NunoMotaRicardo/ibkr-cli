@@ -64,11 +64,17 @@ func NewState() (string, error) { return randB64(24) }
 
 // Register performs RFC 7591 dynamic client registration.
 func Register(ctx context.Context, hc *http.Client, ep *Endpoints, redirectURI string, scopes []string) (*Client, error) {
+	return RegisterNamed(ctx, hc, ep, redirectURI, scopes, "ibkr-cli")
+}
+
+// RegisterNamed is Register with an explicit client_name, which IBKR shows on
+// the consent page and under Manage Third-Party Consents.
+func RegisterNamed(ctx context.Context, hc *http.Client, ep *Endpoints, redirectURI string, scopes []string, clientName string) (*Client, error) {
 	if ep.Registration == "" {
 		return nil, errors.New("authorization server offers no registration endpoint")
 	}
 	body, _ := json.Marshal(map[string]any{
-		"client_name":                "ibkr-cli",
+		"client_name":                clientName,
 		"redirect_uris":              []string{redirectURI},
 		"token_endpoint_auth_method": "none",
 		"grant_types":                []string{"authorization_code", "refresh_token"},

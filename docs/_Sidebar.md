@@ -11,6 +11,7 @@
   - [0007 Secrets](architecture/adr/0007-secrets-storage.md)
   - [0008 Staying current](architecture/adr/0008-staying-current.md)
   - [0009 Versioning](architecture/adr/0009-versioning-and-releases.md)
+  - [0010 Profiles](architecture/adr/0010-profiles.md)
 - Plans
   - [Provider sync](plans/provider-sync.md)
   - [Release process](plans/release-process.md)

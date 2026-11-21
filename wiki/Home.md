@@ -4,6 +4,7 @@
 
 - [Install](Install.md)
 - [Connect](Connect.md): the guided login
+- [Profiles](Profiles.md): more than one login (live and paper)
 - [Commands](Commands.md)
 - [Using with agents](Using-with-agents.md)
 - [Safety](Safety.md)

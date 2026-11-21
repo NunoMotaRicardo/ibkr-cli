@@ -53,6 +53,7 @@ type options struct {
 	limit   int
 	yes     bool
 	server  string
+	profile string
 	timeout time.Duration
 }
 
@@ -155,10 +156,10 @@ func (a *App) report(err error) int {
 		}
 		return ee.Code
 	case errors.Is(err, auth.ErrNotConnected):
-		fmt.Fprintln(a.Err, "Not connected to IBKR. Run `ibkr connect` in a terminal (it opens your browser for login).")
+		fmt.Fprintf(a.Err, "Not connected to IBKR%s. Run `%s` in a terminal (it opens your browser for login).\n", a.profileSuffix(), a.connectHint())
 		return ExitAuth
 	case errors.Is(err, auth.ErrAuthExpired):
-		fmt.Fprintf(a.Err, "IBKR authorization expired or was revoked (%s). Run `ibkr connect` again.\n", strings.TrimPrefix(err.Error(), auth.ErrAuthExpired.Error()+": "))
+		fmt.Fprintf(a.Err, "IBKR authorization expired or was revoked (%s). Run `%s` again.\n", strings.TrimPrefix(err.Error(), auth.ErrAuthExpired.Error()+": "), a.connectHint())
 		return ExitAuth
 	}
 	msg := err.Error()
@@ -181,6 +182,7 @@ func (a *App) Root() *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
+	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error { return a.selectProfile(cmd) }
 	root.SetOut(a.Out)
 	root.SetErr(a.Err)
 	root.SetFlagErrorFunc(func(c *cobra.Command, err error) error { return usageErr("error: %v", err) })
@@ -191,11 +193,12 @@ func (a *App) Root() *cobra.Command {
 	f.IntVar(&a.opts.limit, "limit", 0, "max rows for list output")
 	f.BoolVarP(&a.opts.yes, "yes", "y", false, "confirm state-changing actions")
 	f.StringVar(&a.opts.server, "server", "", "MCP server URL (default: IBKR public connector; env IBKR_MCP_URL)")
+	f.StringVar(&a.opts.profile, "profile", "", "credential profile (env IBKR_PROFILE); required once more than one profile exists")
 	f.DurationVar(&a.opts.timeout, "timeout", 60*time.Second, "per-request timeout")
 	_ = f.MarkHidden("server")
 
 	root.AddCommand(
-		a.connectCmd(), a.statusCmd(), a.logoutCmd(), a.versionCmd(),
+		a.connectCmd(), a.statusCmd(), a.logoutCmd(), a.versionCmd(), a.profilesCmd(),
 		a.toolsCmd(), a.describeCmd(), a.callCmd(),
 	)
 	a.addCurated(root)
@@ -210,7 +213,7 @@ func (a *App) toolCache(ctx context.Context, force bool) (*mcp.ToolCache, error)
 	if a.cache != nil && !force {
 		return a.cache, nil
 	}
-	cached, _ := mcp.LoadCache(a.CacheDir)
+	cached, _ := mcp.LoadCache(a.cacheDir())
 	if !force && cached.Fresh(server, mcp.DefaultTTL, a.now()) {
 		a.cache = cached
 		return cached, nil
@@ -225,7 +228,7 @@ func (a *App) toolCache(ctx context.Context, force bool) (*mcp.ToolCache, error)
 		return nil, err
 	}
 	c := &mcp.ToolCache{Server: server, FetchedAt: a.now(), Tools: tools}
-	_ = mcp.SaveCache(a.CacheDir, c)
+	_ = mcp.SaveCache(a.cacheDir(), c)
 	a.cache = c
 	return c, nil
 }
