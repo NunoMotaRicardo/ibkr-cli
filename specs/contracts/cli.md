@@ -12,7 +12,17 @@ Binary: `ibkr`. Every command accepts the global flags. Provider parameter names
 | `--limit N` | max rows |
 | `-y, --yes` | confirm a state-changing action |
 | `--timeout D` | per-request timeout (default 60s) |
+| `--profile NAME` | credential profile; env `IBKR_PROFILE`, the flag wins. See "Profiles" below. |
 | `--server URL` (hidden) | MCP server URL; env `IBKR_MCP_URL`, config `server_url` |
+
+## Profiles
+
+A profile is one stored login (one IBKR user, for example live and paper). Names match `^[a-z0-9][a-z0-9_-]{0,31}$`; `default` is the pre-profile login and keeps its storage (see `auth.md`).
+
+- Selection: `--profile` > `IBKR_PROFILE`. There is no stored "active profile".
+- Rule: when more than one profile exists (registry plus the default login if it has credentials) and none is selected, every command that uses credentials fails with exit 2 listing the profiles. Exempt: `version`, `help`, `completion`, `profiles`, and any run with `IBKR_ACCESS_TOKEN` set. With zero or one profile no selection is needed.
+- `status` prints `profile:`; "run `ibkr connect`" hints become `ibkr --profile <name> connect` for non-default profiles.
+- The tool cache is per profile.
 
 ## Exit codes
 
@@ -33,7 +43,8 @@ The CLI never prompts when stdin is not a TTY. `connect` is the only command tha
 |---|---|
 | `connect [--allow-orders] [--no-browser] [--manual] [--wait D] [--port N] [--status]` | Guided 8-step wizard (see `auth.md`). `--status` = `status`. |
 | `status [--offline]` | server, connected, storage source, client registered, scopes, token expiry, refresh token presence, orders scope, tool cache age, flow type (calls `get_flow_type` unless `--offline`). Exit 3 when not connected. |
-| `logout` | revoke + delete credentials. |
+| `logout` | revoke + delete credentials of the active profile. |
+| `profiles` | list profiles with `connected`/`not connected` and the storage source. Needs no profile selection. |
 | `version [--check]` | version, commit, date, provider compatibility line; `--check` queries GitHub releases/latest (5 s timeout, no auth) and prints the upgrade command if newer. |
 | `completion <shell>` | cobra completion script. |
 

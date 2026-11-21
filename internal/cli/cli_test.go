@@ -77,6 +77,7 @@ func newEnv(t *testing.T, f *testfake.Fake, connected bool) *env {
 	t.Helper()
 	t.Setenv("IBKR_ACCESS_TOKEN", "")
 	t.Setenv("IBKR_MCP_URL", "")
+	t.Setenv("IBKR_PROFILE", "")
 	t.Setenv("IBKR_CONFIG_DIR", t.TempDir())
 	out, errb := &bytes.Buffer{}, &bytes.Buffer{}
 	st := &secrets.Store{Service: "t", Dir: t.TempDir(), NoKeyring: true}

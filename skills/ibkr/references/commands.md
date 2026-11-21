@@ -6,7 +6,7 @@ Every curated command also takes `--arg key=value` (repeatable) and `--args-json
 Exit codes: 0 ok, 1 error, 2 usage, 3 not connected/expired (user runs `ibkr connect`), 4 needs `--yes`, 5 ambiguous order outcome (never retry; check `ibkr orders`).
 
 ## Session
-- `connect [--allow-orders] [--no-browser] [--manual]` (user only), `status [--offline]`, `logout`, `version [--check]`.
+- `connect [--allow-orders] [--no-browser] [--manual]` (user only), `status [--offline]`, `logout`, `profiles`, `version [--check]`. Global `--profile <name>` / `IBKR_PROFILE` selects the login (required once more than one exists; `connect` for a new one: `ibkr --profile <name> connect`).
 
 ## Discover and call anything
 - `tools [--search q] [--refresh] [--full]`: name, kind (read/write/order), summary. `tools --diff`, `tools --snapshot FILE` are maintainer commands.

@@ -16,7 +16,7 @@
 
 ## Registration (RFC 7591)
 
-Body: `client_name: "ibkr-cli"`, `redirect_uris: ["http://127.0.0.1:<port>/callback"]`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code","refresh_token"]`, `response_types: ["code"]`, `scope`. A stored registration is reused only if server, registration endpoint and redirect URI (same port) still match; the wizard tries to rebind the previous port first. A rejected registration prints status and response body.
+Body: `client_name: "ibkr-cli"` (`"ibkr-cli (<profile>)"` for a named profile, so consents are distinct in Manage Third-Party Consents), `redirect_uris: ["http://127.0.0.1:<port>/callback"]`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code","refresh_token"]`, `response_types: ["code"]`, `scope`. A stored registration is reused only if server, registration endpoint and redirect URI (same port) still match; the wizard tries to rebind the previous port first. A rejected registration prints status and response body.
 
 ## Authorization
 
@@ -30,8 +30,10 @@ Default `mcp.read mcp.write`. `--allow-orders` adds `mcp.orders.submit` after th
 
 One JSON document (`secrets.Credentials`): server, discovered endpoints, client registration, access token, refresh token, expiry, granted scopes.
 
-1. OS keyring, service `ibkr-cli`, user `default`.
-2. Fallback: `<UserConfigDir>/ibkr-cli/credentials.json`, mode 0600 (directory 0700), written atomically.
+1. OS keyring, service `ibkr-cli`, user `default` (named profile: `profile/<name>`).
+2. Fallback: `<UserConfigDir>/ibkr-cli/credentials.json`, mode 0600 (directory 0700), written atomically (named profile: `<UserConfigDir>/ibkr-cli/profiles/<name>/credentials.json`).
+2a. Profile registry `<UserConfigDir>/ibkr-cli/profiles.json` (`{"profiles":[...]}`, 0600): written by `connect`, pruned by `logout`. Needed because keyrings cannot be enumerated. A pre-profile login counts as profile `default` without a registry entry.
+2b. The tool cache lives in `<UserCacheDir>/ibkr-cli/` (named profile: `.../profiles/<name>/`).
 3. `IBKR_ACCESS_TOKEN` overrides the stored access token for the process (no refresh, no expiry tracking); a 401 with it exits 3.
 4. `IBKR_CONFIG_DIR`, `IBKR_CACHE_DIR`, `IBKR_NO_KEYRING=1` relocate or disable backends.
 
@@ -45,4 +47,4 @@ Secret values are never printed. `status` shows presence, source and expiry only
 
 ## Logout
 
-Revoke the refresh token and the access token at the revocation endpoint (best effort, warnings on failure), delete local credentials from keyring and file, remind about Client Portal > Settings > Manage Third-Party Consents.
+Per profile: revoke the refresh token and the access token at the revocation endpoint (best effort, warnings on failure), delete local credentials from keyring and file, remind about Client Portal > Settings > Manage Third-Party Consents.

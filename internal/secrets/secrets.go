@@ -13,7 +13,9 @@ import (
 	"github.com/zalando/go-keyring"
 )
 
-const keyringUser = "default"
+// DefaultProfile is the profile used before profiles existed; its storage
+// locations are unchanged so existing logins keep working.
+const DefaultProfile = "default"
 
 // Source says where credentials came from.
 type Source string
@@ -57,13 +59,38 @@ type Store struct {
 	Service   string // keyring service name
 	Dir       string // directory for the fallback file
 	NoKeyring bool   // skip the OS keyring (also IBKR_NO_KEYRING=1)
+	Profile   string // profile name; "" means DefaultProfile
+}
+
+func (s *Store) profile() string {
+	if s.Profile == "" {
+		return DefaultProfile
+	}
+	return s.Profile
+}
+
+// keyringUser is "default" for the default profile (unchanged) and
+// "profile/<name>" for others.
+func (s *Store) keyringUser() string {
+	if p := s.profile(); p != DefaultProfile {
+		return "profile/" + p
+	}
+	return DefaultProfile
 }
 
 func (s *Store) useKeyring() bool {
 	return !s.NoKeyring && os.Getenv("IBKR_NO_KEYRING") == ""
 }
 
-func (s *Store) file() string { return filepath.Join(s.Dir, "credentials.json") }
+// profileDir is the directory holding this profile's fallback file.
+func (s *Store) profileDir() string {
+	if p := s.profile(); p != DefaultProfile {
+		return filepath.Join(s.Dir, "profiles", p)
+	}
+	return s.Dir
+}
+
+func (s *Store) file() string { return filepath.Join(s.profileDir(), "credentials.json") }
 
 // Path returns the fallback file path.
 func (s *Store) Path() string { return s.file() }
@@ -90,7 +117,7 @@ func (s *Store) Load() (*Credentials, Source, error) {
 
 func (s *Store) loadStored() (*Credentials, Source, error) {
 	if s.useKeyring() {
-		v, err := keyring.Get(s.Service, keyringUser)
+		v, err := keyring.Get(s.Service, s.keyringUser())
 		if err == nil {
 			var c Credentials
 			if jerr := json.Unmarshal([]byte(v), &c); jerr != nil {
@@ -120,12 +147,12 @@ func (s *Store) Save(c *Credentials) (Source, error) {
 		return SourceNone, err
 	}
 	if s.useKeyring() {
-		if err := keyring.Set(s.Service, keyringUser, string(b)); err == nil {
+		if err := keyring.Set(s.Service, s.keyringUser(), string(b)); err == nil {
 			_ = os.Remove(s.file())
 			return SourceKeyring, nil
 		}
 	}
-	if err := os.MkdirAll(s.Dir, 0o700); err != nil {
+	if err := os.MkdirAll(s.profileDir(), 0o700); err != nil {
 		return SourceNone, err
 	}
 	tmp := s.file() + ".tmp"
@@ -141,7 +168,7 @@ func (s *Store) Save(c *Credentials) (Source, error) {
 // Delete removes credentials from every backend.
 func (s *Store) Delete() error {
 	if s.useKeyring() {
-		_ = keyring.Delete(s.Service, keyringUser)
+		_ = keyring.Delete(s.Service, s.keyringUser())
 	}
 	if err := os.Remove(s.file()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err

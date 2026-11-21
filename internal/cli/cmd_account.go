@@ -50,10 +50,10 @@ func (a *App) status(ctx context.Context, offline bool) error {
 	if err != nil {
 		return failErr("cannot read stored credentials: %v", err)
 	}
-	kv := [][2]string{{"server", a.serverURL()}}
+	kv := [][2]string{{"profile", a.profile()}, {"server", a.serverURL()}}
 	connected := creds != nil && creds.HasToken()
 	if !connected {
-		kv = append(kv, [2]string{"connected", "no"}, [2]string{"hint", "run `ibkr connect` in a terminal"})
+		kv = append(kv, [2]string{"connected", "no"}, [2]string{"hint", "run `" + a.connectHint() + "` in a terminal"})
 		a.printKV(kv)
 		return &ExitErr{Code: ExitAuth}
 	}
@@ -76,7 +76,7 @@ func (a *App) status(ctx context.Context, offline bool) error {
 	default:
 		note := "refreshes automatically on next use"
 		if creds.RefreshToken == "" {
-			note = "no refresh token: run `ibkr connect`"
+			note = "no refresh token: run `" + a.connectHint() + "`"
 		}
 		kv = append(kv, [2]string{"token_expiry", "expired " + humanDuration(a.now().Sub(creds.Expiry)) + " ago (" + note + ")"})
 	}
@@ -115,7 +115,7 @@ func (a *App) status(ctx context.Context, offline bool) error {
 	return retErr
 }
 
-func mcp_loadCache(a *App) (*mcp.ToolCache, error) { return mcp.LoadCache(a.CacheDir) }
+func mcp_loadCache(a *App) (*mcp.ToolCache, error) { return mcp.LoadCache(a.cacheDir()) }
 
 func (a *App) printKV(kv [][2]string) {
 	for _, p := range kv {
@@ -179,6 +179,7 @@ func (a *App) logoutCmd() *cobra.Command {
 				return failErr("cannot read stored credentials: %v", err)
 			}
 			if creds == nil || (!creds.HasToken() && creds.ClientID == "") {
+				_ = a.Store.Unregister()
 				fmt.Fprintln(a.Out, "Nothing stored; already logged out.")
 				return nil
 			}
@@ -200,7 +201,10 @@ func (a *App) logoutCmd() *cobra.Command {
 			if err := a.Store.Delete(); err != nil {
 				return failErr("could not delete local credentials: %v", err)
 			}
-			fmt.Fprintln(a.Out, "Deleted local credentials.")
+			if err := a.Store.Unregister(); err != nil {
+				fmt.Fprintf(a.Err, "warning: could not update the profile list: %v\n", err)
+			}
+			fmt.Fprintln(a.Out, "Deleted local credentials"+a.profileSuffix()+".")
 			if os := envTokenSet(); os {
 				fmt.Fprintln(a.Out, "Note: IBKR_ACCESS_TOKEN is still set in your environment.")
 			}

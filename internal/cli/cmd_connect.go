@@ -72,13 +72,16 @@ func (a *App) readLine(prompt string) (string, error) {
 func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 	// 1. explain
 	a.step(1, "What will happen")
+	if !a.isDefaultProfile() {
+		fmt.Fprintf(a.Out, "  Profile: %s (registered with IBKR as %q). Log in with the IBKR login for this profile.\n", a.profile(), a.clientName())
+	}
 	fmt.Fprintln(a.Out, "  ibkr-cli will ask Interactive Brokers for permission to act on your account through IBKR's")
 	fmt.Fprintln(a.Out, "  MCP connector. You log in on IBKR's own page (2FA via the IBKR mobile app may be required);")
 	fmt.Fprintln(a.Out, "  this CLI never sees your IBKR password. You need an IBKR account with API/connector access.")
 	fmt.Fprintln(a.Out, "  You can revoke access any time: `ibkr logout`, or Client Portal > Settings > Manage Third-Party Consents.")
 	existing, _, _ := a.Store.Load()
 	if existing != nil && existing.HasToken() {
-		fmt.Fprintln(a.Out, "  Note: you are already connected; this replaces the stored tokens.")
+		fmt.Fprintln(a.Out, "  Note: you are already connected; this replaces the stored tokens"+a.profileSuffix()+".")
 	}
 
 	// 2. scopes
@@ -150,7 +153,7 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 		client = &auth.Client{ID: existing.ClientID, Secret: existing.ClientSecret, RedirectURI: redirect}
 		fmt.Fprintln(a.Out, "  reusing the stored client registration")
 	} else {
-		client, err = auth.Register(ctx, hc, ep, redirect, scopes)
+		client, err = auth.RegisterNamed(ctx, hc, ep, redirect, scopes, a.clientName())
 		if err != nil {
 			var he *auth.HTTPError
 			detail := err.Error()
@@ -217,10 +220,10 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 	out := <-ch
 	stopSpin()
 	if out.err != nil {
-		return a.stepFail(out.err.Error(), "run `ibkr connect` again (use --manual on a headless machine, --wait to allow more time).")
+		return a.stepFail(out.err.Error(), "run `"+a.connectHint()+"` again (use --manual on a headless machine, --wait to allow more time).")
 	}
 	if err := auth.ValidateCallback(out.cb, state, ep, f.manual); err != nil {
-		return a.stepFail(err.Error(), "run `ibkr connect` again and use only the newest browser tab.")
+		return a.stepFail(err.Error(), "run `"+a.connectHint()+"` again and use only the newest browser tab.")
 	}
 	fmt.Fprintln(a.Out, "  Authorization received.")
 
@@ -228,7 +231,7 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 	a.step(6, "Exchange the code for tokens and store them")
 	tok, err := auth.Exchange(ctx, hc, ep, client, out.cb.Code, pk.Verifier)
 	if err != nil {
-		return a.stepFail("token exchange failed: "+err.Error(), "run `ibkr connect` again; codes are single-use and expire quickly.")
+		return a.stepFail("token exchange failed: "+err.Error(), "run `"+a.connectHint()+"` again; codes are single-use and expire quickly.")
 	}
 	granted := tok.Scopes
 	if len(granted) == 0 {
@@ -242,6 +245,11 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 		Scopes: granted, ConnectedAt: a.now(),
 	}
 	src, err := a.Store.Save(creds)
+	if err == nil {
+		if rerr := a.Store.Register(); rerr != nil {
+			fmt.Fprintf(a.Err, "warning: could not record the profile: %v\n", rerr)
+		}
+	}
 	if err != nil {
 		return a.stepFail("could not store credentials: "+err.Error(), "check permissions on "+a.Store.Dir+", or set IBKR_ACCESS_TOKEN for a session.")
 	}
@@ -250,7 +258,7 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 		fmt.Fprintln(a.Out, "  note: the live-order scope was not granted.")
 	}
 	if len(tok.RefreshToken) == 0 {
-		fmt.Fprintln(a.Out, "  note: no refresh token issued; you will need to run `ibkr connect` again when the token expires.")
+		fmt.Fprintln(a.Out, "  note: no refresh token issued; you will need to run `"+a.connectHint()+"` again when the token expires.")
 	}
 
 	// 7. verify

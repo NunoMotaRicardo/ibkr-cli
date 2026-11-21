@@ -6,6 +6,7 @@
 - **Curated**: `ibkr positions`, `quote`, `history`, `options chain`, `alerts`, `watchlists`, `screener`, and more.
 - **Token-lean output**: compact text by default; `--json`, `--raw`, `--fields`, `--limit` on request.
 - **Safe**: writes need `--yes` (exit 4); live orders require an explicit scope opt-in (`--allow-orders`) and `AUTONOMOUS` flow, are previewed interactively, and are never retried after an ambiguous outcome (exit 5).
+- **Several logins** (live and paper): `ibkr --profile paper connect`, then `--profile` / `IBKR_PROFILE`; see the [Profiles](wiki/Profiles.md) page.
 - **Guided login**: `ibkr connect` (OAuth with PKCE in your browser; credentials stored in the OS keyring or a `0600` file).
 
 ## Install the CLI

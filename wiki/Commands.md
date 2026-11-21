@@ -1,6 +1,6 @@
 # Commands
 
-Run `ibkr <command> --help` for flags. Output is compact text; add `--json` to parse, `--raw` for the provider's full response, `--fields a,b` to choose columns, `--limit N` to cap rows.
+Run `ibkr <command> --help` for flags. Output is compact text; add `--json` to parse, `--raw` for the provider's full response, `--fields a,b` to choose columns, `--limit N` to cap rows. `--profile <name>` (or `IBKR_PROFILE`) picks the login; see [Profiles](Profiles.md).
 
 ## Always-current commands
 
