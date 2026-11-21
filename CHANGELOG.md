@@ -7,6 +7,8 @@ CLI change (flag or exit-code) bumps the minor version and is called out here.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-21
+
 ### Added
 - Credential profiles for several IBKR logins (for example live and paper): `ibkr --profile <name> connect`, `--profile` / `IBKR_PROFILE` on every command, and `ibkr profiles` to list them. Each profile has its own keyring entry or `0600` file and its own tool cache, and registers with IBKR as `ibkr-cli (<name>)` so consents do not replace each other.
 - Once more than one profile exists, every command that touches credentials needs `--profile` or `IBKR_PROFILE` (usage error, exit 2), so a command can never silently act on the wrong account. Existing single-login setups are unchanged: the original login is the `default` profile and keeps its storage location.
@@ -23,5 +25,6 @@ CLI change (flag or exit-code) bumps the minor version and is called out here.
 - `ibkr tools --diff` / `--snapshot` against `specs/provider/tools-snapshot.json`; `ibkr version --check`.
 - Agent Skill `skills/ibkr` and plugin manifests for Claude Code, Cursor, Gemini CLI and Codex-compatible tools.
 
-[Unreleased]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/NunoMotaRicardo/ibkr-cli/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/NunoMotaRicardo/ibkr-cli/releases/tag/v0.1.0
