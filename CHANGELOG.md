@@ -7,6 +7,9 @@ CLI change (flag or exit-code) bumps the minor version and is called out here.
 
 ## [Unreleased]
 
+### Fixed
+- Profiles documentation: distinct per-profile client names do **not** stop IBKR from replacing a consent when two profiles use the **same IBKR login**. Observed: after connecting a second account of one login, the first profile failed with `invalid_grant`, while a profile on a separate (paper) login kept working. Profiles are for separate logins; two accounts under one login need one profile that you reconnect to switch. `connect` now warns about this when other profiles exist.
+
 ## [0.2.1] - 2026-11-21
 
 ### Fixed
