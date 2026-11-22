@@ -79,6 +79,10 @@ func (a *App) runConnect(ctx context.Context, f connectFlags) error {
 	fmt.Fprintln(a.Out, "  MCP connector. You log in on IBKR's own page (2FA via the IBKR mobile app may be required);")
 	fmt.Fprintln(a.Out, "  this CLI never sees your IBKR password. You need an IBKR account with API/connector access.")
 	fmt.Fprintln(a.Out, "  You can revoke access any time: `ibkr logout`, or Client Portal > Settings > Manage Third-Party Consents.")
+	if others, _ := a.Store.Profiles(); len(others) > 0 && !(len(others) == 1 && others[0] == a.profile()) {
+		fmt.Fprintln(a.Out, "  Note: IBKR keeps one consent per login. If another profile uses this same IBKR login, connecting here")
+		fmt.Fprintln(a.Out, "  replaces its consent and it will fail with invalid_grant. Different logins (live, paper) are unaffected.")
+	}
 	existing, _, _ := a.Store.Load()
 	if existing != nil && existing.HasToken() {
 		fmt.Fprintln(a.Out, "  Note: you are already connected; this replaces the stored tokens"+a.profileSuffix()+".")

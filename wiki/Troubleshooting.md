@@ -4,7 +4,7 @@
 |---|---|
 | Exit 3 "Not connected" | run `ibkr connect` in a terminal |
 | Exit 2 "more than one profile exists" | pass `--profile <name>` or set `IBKR_PROFILE` (see [Profiles](Profiles.md)) |
-| Exit 3 "authorization expired or revoked" | the refresh token was revoked or expired; run `ibkr connect` again (check Manage Third-Party Consents) |
+| Exit 3 "authorization expired or revoked" | the refresh token was revoked or expired; run `ibkr connect` again (check Manage Third-Party Consents). If another profile uses the **same IBKR login**, connecting it replaced this one: see [Profiles](Profiles.md#one-profile-per-login) |
 | `connect` step 4 fails: registration rejected | the wizard prints the HTTP status and body. **Unverified:** IBKR may reject loopback redirect URIs (`http://127.0.0.1:<port>/callback`) for dynamically registered clients. Retry once; if it persists open an issue with the printed text |
 | Browser did not open | use the printed URL, or `--no-browser`; on SSH/headless use `--manual` |
 | Callback times out | finish 2FA in the IBKR mobile app; use `--wait 10m` |

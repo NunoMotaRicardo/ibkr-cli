@@ -16,7 +16,7 @@
 
 ## Registration (RFC 7591)
 
-Body: `client_name: "ibkr-cli"` (`"ibkr-cli (<profile>)"` for a named profile, so consents are distinct in Manage Third-Party Consents), `redirect_uris: ["http://127.0.0.1:<port>/callback"]`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code","refresh_token"]`, `response_types: ["code"]`, `scope`. A stored registration is reused only if server, registration endpoint and redirect URI (same port) still match; the wizard tries to rebind the previous port first. A rejected registration prints status and response body.
+Body: `client_name: "ibkr-cli"` (`"ibkr-cli (<profile>)"` for a named profile, so consents of different logins are distinct in Manage Third-Party Consents; accounts of the same login still replace each other), `redirect_uris: ["http://127.0.0.1:<port>/callback"]`, `token_endpoint_auth_method: "none"`, `grant_types: ["authorization_code","refresh_token"]`, `response_types: ["code"]`, `scope`. A stored registration is reused only if server, registration endpoint and redirect URI (same port) still match; the wizard tries to rebind the previous port first. A rejected registration prints status and response body.
 
 ## Authorization
 

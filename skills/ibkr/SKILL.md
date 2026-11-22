@@ -10,7 +10,7 @@ description: Use for Interactive Brokers (IBKR) tasks through the `ibkr` CLI - a
 ## Rules
 - Run `ibkr --help` or `ibkr <cmd> --help` instead of guessing flags. Default compact output is cheapest; use `--json` only when you must parse.
 - Prefer curated commands. For anything else: `ibkr tools --search <word>`, `ibkr describe <tool>`, then `ibkr call <tool> key=value`. Tools the CLI does not know yet are still reachable this way.
-- Several logins (e.g. live and paper) are profiles: `ibkr profiles` lists them. Once more than one exists, every command needs `--profile <name>` (or `IBKR_PROFILE`); exit 2 listing profiles means ask the user which one. Never pick a profile for orders or writes on your own.
+- Several logins (e.g. live and paper) are profiles: `ibkr profiles` lists them. Once more than one exists, every command needs `--profile <name>` (or `IBKR_PROFILE`); exit 2 listing profiles means ask the user which one. Never pick a profile for orders or writes on your own. One profile per IBKR login: two accounts of the same login cannot be connected at once (connecting one revokes the other, `invalid_grant`); ask the user to reconnect and pick the account.
 - Exit 3 = not connected or access expired. Ask the user to run `ibkr connect` themselves in a terminal (it opens a browser; you cannot do it). Then retry.
 - Exit 4 = confirmation required. Show the user the printed summary, get an explicit yes, then repeat the command with `--yes`. One yes = one execution. Never add `--yes` on your own.
 - Exit 5 = an order call had an unknown outcome. Do NOT retry. Run `ibkr orders` and `ibkr trades` and report.

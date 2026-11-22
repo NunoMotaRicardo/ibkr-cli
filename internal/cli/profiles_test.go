@@ -151,3 +151,31 @@ func TestLogoutOneProfileLeavesOther(t *testing.T) {
 		t.Fatalf("default after paper logout: %d %q", c, e.err.String())
 	}
 }
+
+func TestConnectWarnsAboutSameLoginWhenOtherProfilesExist(t *testing.T) {
+	f := fakeIBKR()
+	defer f.Close()
+	e := newEnv(t, f, false)
+	e.app.OpenBrowser = func(u string) error {
+		go func() {
+			if r, err := http.Get(u); err == nil {
+				r.Body.Close()
+			}
+		}()
+		return nil
+	}
+	const warn = "one consent per login"
+	if c := e.run("--profile", "a", "connect", "--wait", "10s"); c != 0 {
+		t.Fatalf("code %d\nerr:%s", c, e.err.String())
+	}
+	if strings.Contains(e.out.String(), warn) {
+		t.Fatal("warned on the first profile")
+	}
+	e.out.Reset()
+	if c := e.run("--profile", "b", "connect", "--wait", "10s"); c != 0 {
+		t.Fatalf("code %d\nerr:%s", c, e.err.String())
+	}
+	if !strings.Contains(e.out.String(), warn) {
+		t.Fatalf("no same-login warning on the second profile:\n%s", e.out.String())
+	}
+}

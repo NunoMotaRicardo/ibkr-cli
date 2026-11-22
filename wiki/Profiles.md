@@ -1,8 +1,12 @@
 # Profiles: more than one IBKR login
 
-Use a profile for each IBKR login you want to reach from the same machine, for example a live and a paper-trading login. Each profile has its own credentials and its own tool cache.
+Use a profile for each IBKR **login** you want to reach from the same machine, for example a live and a paper-trading login. Each profile has its own credentials and its own tool cache.
 
-Note: one IBKR authorization covers one account, and IBKR keeps one consent per app name. That is why each profile registers with IBKR under its own name (`ibkr-cli (paper)`), so connecting one never revokes another. Two accounts under the *same* login still need separate profiles, and you pick the account on IBKR's consent page each time.
+## One profile per login
+
+One IBKR authorization covers one account, and IBKR keeps one consent per login. Each profile registers under its own name (`ibkr-cli (paper)`), which keeps consents from *different logins* apart.
+
+It does **not** make two accounts of the *same* login independent. If a single login owns accounts A and B, connecting a profile for B replaces the consent of the profile for A, which then fails with `invalid_grant` ("Invalid authorization status"). To switch between accounts of one login, use one profile and reconnect (`ibkr --profile <name> connect`), picking the other account on IBKR's consent page.
 
 ## Set up
 
